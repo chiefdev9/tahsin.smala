@@ -1,545 +1,223 @@
 ---
+// src/pages/respons.astro
 import '../styles/global.css';
-import { Image } from 'astro:assets';
-
-const headerImageUrl = "https://files.jotform.com/jufs/syukron2123%2Fform_files%2Fheader3.68b41cf66effe4.06405900.png?md5=1hOLhSd5OQUJQBlLbNZ9bA&expires=1785511403";
 ---
 
 <!DOCTYPE html>
-<html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulir Tes Kenaikan Jilid</title>
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+<html lang="id" translate="no" class="notranslate">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitoring Hasil Tes</title>
+  <!-- Load Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Supabase JS Client CDN -->
+  <script is:inline src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Meta Tag Open Graph untuk WA / Medsos -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="New Form - Tes Kenaikan Jilid - SMART AULADI" />
-  <meta property="og:description" content="Formulir tes kenaikan jilid SD SMART AULADI Cirebon." />
+  <meta property="og:title" content="Rekap Data Kenaikan Jilid - Tahsin" />
+  <meta property="og:description" content="Ringkasan kenaikan jilid Harian- SMART AULADI." />
   
   <!-- Memanggil gambar thumb.png dari folder public -->
-  <meta property="og:image" content="https://tahsin-smala.vercel.app/thumb.png" />
+  <meta property="og:image" content="https://tahsin-smala.vercel.app/respons-thumb.png" />
   <meta property="og:image:width" content="630" />
   <meta property="og:image:height" content="630" />
 
   <!-- Ikon khusus saat dijadikan shortcut di Home Screen HP -->
-  <link rel="apple-touch-icon" href="/icon.png" />
+  <link rel="manifest" href="/manifest-respons.json" />
+  <link rel="apple-touch-icon" href="/respon-icon-.svg" />
 
-  </head>
-  
-  <!-- Splash Screen ditaruh di PALING ATAS di dalam <body> -->
-    <div id="splash-screen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white transition-opacity duration-500">
-      <div class="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent"></div>
-    </div>
+  <!-- Mengatur warna status bar di Android -->
+  <meta name="theme-color" content="#ffffff" />
 
-  <body class="bg-[#f3f4f8] min-h-screen py-8 sm:py-12 px-4 flex justify-center items-start font-['Inter',sans-serif] antialiased text-[#2c3e50] tracking-normal">
-    
-    <!-- Container Card Utama -->
-    <main class="w-full max-w-[680px] bg-white rounded-md shadow-sm border border-[#e2e8f0] overflow-hidden">
+  <!-- Mengatur status bar di iPhone/iOS agar tetap terlihat -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-10">
+
+  <!-- Sticky Header -->
+  <header class="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-3 shadow-sm mb-4">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">📋</span>
+        <h1 class="text-base font-bold text-slate-800 tracking-tight">Hasil Tes Kenaikan Jilid</h1>
+      </div>
       
-      <!-- Header Banner Image -->
-      <div class="w-full bg-slate-50 border-b border-[#e2e8f0] overflow-hidden">
-        <Image 
-          src={headerImageUrl} 
-          alt="Header Formulir Tes Kenaikan Jilid" 
-          width={680}
-          height={180}
-          loading="eager"
-          decoding="async"
-          class="w-full h-auto object-cover block"
-        />
+      <!-- Counter Data Masuk -->
+      <div 
+        id="data-counter" 
+        class="inline-flex items-center gap-1.5 bg-emerald-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm"
+      >
+        <span id="count-text">0 Data Masuk</span>
       </div>
+    </div>
+  </header>
 
-      <!-- Form Content -->
-      <form id="testForm" class="p-6 sm:p-9 space-y-6">
-        
-        <!-- Field 1: Nama Siswa (Custom Search Dropdown Pas Di Bawah Input) -->
-        <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-center gap-2 sm:gap-3">
-          <label for="namaSiswa" class="text-[12px] font-bold tracking-[0.05em] uppercase text-[#475569]">
-            NAMA SISWA <span class="text-red-500">*</span>
-          </label>
-          
-          <!-- Wrapper dengan relative positioning -->
-          <div class="relative w-full">
-            <input 
-              type="text" 
-              id="namaSiswa" 
-              placeholder="KETIK NAMA SISWA"
-              required
-              autocomplete="off"
-              class="w-full px-3.5 py-2 text-[13px] tracking-[0.04em] font-medium border border-[#cbd5e1] rounded-[3px] focus:outline-none focus:border-[#3b82f6] focus:ring-1 focus:ring-[#3b82f6] text-[#1e293b] uppercase placeholder:tracking-normal placeholder:normal-case placeholder:font-normal placeholder:text-slate-400 transition-all"
-            />
-            
-            <!-- Custom Dropdown Container -->
-            <div 
-              id="customDropdown" 
-              class="hidden absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-[#cbd5e1] rounded-[3px] shadow-lg max-h-52 overflow-y-auto divide-y divide-slate-100"
-            ></div>
-          </div>
-        </div>
-
-        <!-- Field 2: Kelas (Read-only otomatis) -->
-        <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-center gap-2 sm:gap-3">
-          <label for="kelas" class="text-[12px] font-bold tracking-[0.05em] uppercase text-[#475569]">
-            KELAS
-          </label>
-          <input 
-            type="text" 
-            id="kelas" 
-            readonly 
-            placeholder="Otomatis terisi"
-            class="w-full px-3.5 py-2 text-[13px] tracking-[0.05em] font-semibold border border-[#cbd5e1] rounded-[3px] bg-[#f8fafc] text-[#334155] uppercase cursor-not-allowed focus:outline-none placeholder:normal-case placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-400"
-          />
-        </div>
-
-        <!-- Field 3: Jilid Saat Ini (Read-only otomatis) -->
-        <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-center gap-2 sm:gap-3">
-          <label for="jilid" class="text-[12px] font-bold tracking-[0.05em] uppercase text-[#475569]">
-            JILID SAAT INI
-          </label>
-          <input 
-            type="text" 
-            id="jilid" 
-            readonly 
-            placeholder="Otomatis terisi"
-            class="w-full px-3.5 py-2 text-[13px] tracking-[0.05em] font-semibold border border-[#cbd5e1] rounded-[3px] bg-[#f8fafc] text-[#334155] uppercase cursor-not-allowed focus:outline-none placeholder:normal-case placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-400"
-          />
-        </div>
-
-        <!-- Field 4: Detail Tes (Tombol Opsi) -->
-        <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-start gap-2 sm:gap-3 pt-1">
-          <label class="text-[12px] font-bold tracking-[0.05em] uppercase text-[#475569] pt-1 select-none">
-            DETAIL TES <span class="text-red-500">*</span>
-          </label>
-          
-          <div class="w-full">
-            <!-- Input Radio Tersembunyi untuk Form Handler -->
-            <input type="radio" id="radio-lulus" name="detailTes" value="LULUS" class="hidden" />
-            <input type="radio" id="radio-mengulang" name="detailTes" value="MENGULANG" class="hidden" />
-
-            <!-- STATE 1: Tampilan Awal -->
-            <div id="option-container" class="flex items-center gap-3 w-full transition-all duration-300">
-              <button type="button" onclick="selectOption('LULUS')" class="flex-1 cursor-pointer flex items-center justify-center py-2 px-3 text-[12px] font-bold tracking-[0.05em] uppercase text-white bg-[#10b981] rounded-md shadow-sm transition-all duration-200 hover:opacity-90 active:scale-95 text-center select-none">
-                LULUS
-              </button>
-              <button type="button" onclick="selectOption('MENGULANG')" class="flex-1 cursor-pointer flex items-center justify-center py-2 px-3 text-[12px] font-bold tracking-[0.05em] uppercase text-white bg-[#ef4444] rounded-md shadow-sm transition-all duration-200 hover:opacity-90 active:scale-95 text-center select-none">
-                MENGULANG
-              </button>
-            </div>
-
-            <!-- STATE 2: Tampilan Setelah Pilih -->
-            <div id="selected-container" class="hidden flex items-center gap-3 w-full transition-all duration-300">
-              <div id="selected-btn" class="w-[70%] flex items-center justify-center py-2 px-3 text-[12px] font-bold tracking-[0.05em] uppercase text-white rounded-md shadow-sm text-center select-none">
-                <span id="selected-text"></span>
-              </div>
-              <button type="button" onclick="resetOption()" title="Reset Pilihan" class="w-[30%] flex items-center justify-center py-2 px-3 bg-slate-600 hover:bg-slate-700 active:scale-95 text-white rounded-md shadow-sm transition-all duration-200 cursor-pointer select-none group">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.83 6.72 2.24" />
-                  <path d="M21 3v6h-6" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Field 5: Catatan (Textarea) -->
-        <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-start gap-2 sm:gap-3">
-          <label for="catatan" class="text-[12px] font-bold tracking-[0.05em] uppercase text-[#475569] pt-2">
-            CATATAN
-          </label>
-          <textarea 
-            id="catatan" 
-            rows="4" 
-            placeholder="Masukkan catatan penilaian..."
-            class="w-full px-3.5 py-2.5 text-[13px] leading-relaxed tracking-[0.02em] border border-[#cbd5e1] rounded-[3px] focus:outline-none focus:border-[#3b82f6] focus:ring-1 focus:ring-[#3b82f6] text-[#1e293b] resize-y placeholder:text-slate-400 placeholder:tracking-normal transition-all"
-          ></textarea>
-        </div>
-
-        <!-- Footer & Submit Button -->
-        <div class="border-t border-[#f1f5f9] pt-6 mt-8 flex justify-center">
-          <button 
-            type="submit" 
-            class="bg-[#10b981] hover:bg-[#059669] active:bg-[#047857] text-white font-bold text-[13px] tracking-[0.06em] uppercase px-12 py-2.5 rounded-[3px] transition-all duration-150 shadow-sm cursor-pointer"
-          >
-            Submit
-          </button>
-        </div>
-
-      </form>
-
-      <!-- Pesan Sukses -->
-      <div id="suksesContainer" class="hidden p-6 sm:p-9 text-center space-y-4">
-        <h2 class="text-xl font-bold text-emerald-600">
-          ✅ Data berhasil disimpan!
-        </h2>
-        <button 
-          onclick="location.reload()" 
-          class="bg-[#10b981] hover:bg-[#059669] active:bg-[#047857] text-white font-bold text-[13px] tracking-[0.06em] uppercase px-12 py-2.5 rounded-[3px] transition-all duration-150 shadow-sm cursor-pointer"
-        >
-          Tes Anak Berikutnya
-        </button>
+  <!-- Container Konten -->
+  <main class="max-w-md mx-auto px-4">
+    <div id="content" class="flex flex-col gap-3">
+      <!-- Loading State Initial -->
+      <div class="flex flex-col items-center justify-center py-12 text-slate-400 gap-2">
+        <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-xs font-medium">Memuat data...</p>
       </div>
+    </div>
+  </main>
 
-      <!-- Modal Peringatan Detail Tes Belum Dipilih -->
-      <div id="warningModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-md p-6 sm:p-8 relative transform transition-all scale-95 opacity-0 duration-300 text-center" id="modalContent">
-          
-          <!-- Ikon Peringatan -->
-          <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-red-100 text-red-500 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
+  <script is:inline>
+    const SUPABASE_URL = "https://vxwokdpgkarhiighnybq.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_e99BJ-n7_TyiPQB88uDcwA_N0xjtygX"; 
 
-          <!-- Pesan Peringatan -->
-          <h3 class="text-base sm:text-lg font-semibold text-gray-800 mb-6">
-            Maaf Hasil Tes Belum di Pilih!
-          </h3>
+    let supabaseClient;
 
-          <!-- Tombol Mengerti -->
-          <button onclick="closeWarningModal()" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-3 rounded-xl transition-colors shadow cursor-pointer text-sm sm:text-base">
-            Mengerti
-          </button>
-        </div>
-      </div>
-
-    </main>
-
-    <!-- Client-side Logic -->
-    <script is:inline type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-// Konfigurasi endpoint Spreadsheet & Supabase
-const SHEETDB_API_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlkxd8dmQkdKm720azA9vog-nI06aVC8AX-c0gKMZx7Q2XBIbO31C4em-DKsSj7GdqtluPVfRYp4Gk/pub?gid=1481426139&single=true&output=csv";
-
-const SUPABASE_URL = "https://vxwokdpgkarhiighnybq.supabase.co";
-const SUPABASE_KEY = "sb_publishable_e99BJ-n7_TyiPQB88uDcwA_N0xjtygX";
-
-// Inisialisasi klien Supabase
-const _supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: { persistSession: false }
-});
-
-let dataSiswa = [];
-let selectedIndex = -1;
-
-const inputNama = document.getElementById('namaSiswa');
-const customDropdown = document.getElementById('customDropdown');
-const inputKelas = document.getElementById('kelas');
-const inputJilid = document.getElementById('jilid');
-const form = document.getElementById('testForm');
-
-// Fungsi untuk mengambil data siswa dari CSV Spreadsheet dengan sistem Caching
-async function fetchSiswa() {
-  const cachedData = localStorage.getItem('cache_sheetdb_apiform');
-  if (cachedData) {
-    try {
-      dataSiswa = JSON.parse(cachedData);
-    } catch (e) {
-      console.error("Gagal membaca cache:", e);
-    }
-  }
-
-  try {
-    const response = await fetch(SHEETDB_API_URL);
-    if (!response.ok) return;
-
-    const csvText = await response.text();
-    const lines = csvText.split('\n').filter(line => line.trim() !== '');
-    if (lines.length > 0) {
-      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-      const parsedData = [];
-
-      for (let i = 1; i < lines.length; i++) {
-        const currentLine = lines[i].split(',').map(item => item.trim().replace(/^"|"$/g, ''));
-        if (currentLine.length === headers.length) {
-          let obj = {};
-          headers.forEach((header, index) => {
-            obj[header] = currentLine[index];
-          });
-          parsedData.push(obj);
-        }
+    function initSupabase() {
+      if (window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        loadData();
+        setupRealtime();
+      } else {
+        setTimeout(initSupabase, 100);
       }
-
-      dataSiswa = parsedData;
-      localStorage.setItem('cache_sheetdb_apiform', JSON.stringify(dataSiswa));
     }
-  } catch (error) {
-    console.error("Gagal koneksi data CSV:", error);
-  }
-}
 
-// Fungsi untuk merender daftar pencarian siswa pada dropdown kustom
-function renderDropdown(query = '') {
-  selectedIndex = -1;
-  if (!customDropdown) return;
-  const val = query.trim().toUpperCase();
+    async function loadData() {
+      const container = document.getElementById("content");
+      const counterText = document.getElementById("count-text");
+      if (!container) return;
 
-  if (!val) {
-    customDropdown.classList.add('hidden');
-    return;
-  }
+      const emptyUI = `
+        <div class="bg-white border border-dashed border-slate-300 rounded-2xl p-8 text-center my-4">
+          <div class="text-3xl mb-2">📥</div>
+          <p class="text-sm font-semibold text-slate-600">Belum Ada Data</p>
+          <p class="text-xs text-slate-400 mt-1">Hasil tes peserta akan muncul secara otomatis di sini.</p>
+        </div>
+      `;
 
-  const filtered = dataSiswa.filter(s => 
-    s["Nama Siswa"] && String(s["Nama Siswa"]).toUpperCase().includes(val)
-  );
+      try {
+        const { data, error } = await supabaseClient
+          .from('hasil_tes')
+          .select('*')
+          .order('id', { ascending: true }); // Mengurutkan dari yang paling pertama/lama (1) ke terbaru
 
-  if (filtered.length === 0) {
-    customDropdown.classList.add('hidden');
-    return;
-  }
+        if (error || !data || data.length === 0) {
+          container.innerHTML = emptyUI;
+          if (counterText) counterText.innerText = "0 Data Masuk";
+          return;
+        }
 
-  customDropdown.innerHTML = '';
-  
-  filtered.forEach(siswa => {
-    const namaLengkap = String(siswa["Nama Siswa"]).toUpperCase();
-    const item = document.createElement('div');
-    
-    item.className = "dropdown-item px-3.5 py-2 text-[12.5px] font-semibold text-[#334155] hover:bg-[#eff6ff] hover:text-[#2563eb] cursor-pointer transition-colors";
+        const totalItems = data.length;
 
-    const regex = new RegExp(`(${val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    item.innerHTML = namaLengkap.replace(regex, '<span class="font-extrabold text-black bg-yellow-200/80 rounded-[2px] px-0.5">$1</span>');
+        // Update jumlah data secara dinamis
+        if (counterText) {
+          counterText.innerText = `${totalItems} Data Masuk`;
+        }
 
-    const selectThisItem = () => {
-      inputNama.value = namaLengkap;
-      inputKelas.value = siswa["Kelas"] || "";
-      inputJilid.value = siswa["Saat Ini"] || "";
-      customDropdown.classList.add('hidden');
-      selectedIndex = -1;
-    };
+        let html = '';
+        data.forEach((item, index) => {
+          const nomorUrut = index + 1; // Berurut dari 1, 2, 3 ke bawah
 
-    item.addEventListener('click', selectThisItem);
-    item._selectItem = selectThisItem;
+          const detailTes = item['Detail Tes'] || '-';
+          const isLulus = String(detailTes).toUpperCase() === 'LULUS';
+          
+          const nama = item['Nama Proper'] || item['Nama Siswa'] || '-';
+          const kelas = item['Kelas'] || '-';
+          const jilid = item['Saat Ini'] || '-';
+          const naikKe = item['Naik ke'] || '';
+          const guruBerikutnya = item['Guru Berikutnya'] || '';
+          const catatan = item['Catatan'] || null;
+          const date = item['Submission Date'] || '-';
 
-    customDropdown.appendChild(item);
-  });
+          // Dynamic Tailwind Styling untuk Lulus vs Mengulang
+          const cardBorder = isLulus ? 'border-emerald-500' : 'border-rose-500';
+          const badgeBg = isLulus ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200';
 
-  customDropdown.classList.remove('hidden');
-}
+          html += `
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 ${cardBorder} border-y border-r border-slate-100 transition-all">
+              <!-- Top Row: Nama & Badge -->
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <h2 class="font-bold text-slate-800 text-sm leading-snug">${nama}</h2>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeBg} shrink-0">
+                  ${detailTes}
+                </span>
+              </div>
 
-// Fungsi untuk memperbarui sorotan item dropdown menggunakan navigasi keyboard
-function updateHighlight(items) {
-  items.forEach((item, index) => {
-    if (index === selectedIndex) {
-      item.classList.add('bg-[#eff6ff]', 'text-[#2563eb]');
-      item.scrollIntoView({ block: 'nearest' });
-    } else {
-      item.classList.remove('bg-[#eff6ff]', 'text-[#2563eb]');
+              <!-- Metadata Row: Kelas & Jilid -->
+              <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
+                <div class="flex items-center gap-1">
+                  <span class="text-slate-400 font-medium">Kelas:</span>
+                  <span class="font-semibold text-slate-700">${kelas}</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="text-slate-400 font-medium">Jilid:</span>
+                  <span class="font-semibold text-slate-700">${jilid}</span>
+                </div>
+              </div>
+
+              <!-- Input Fields: Naik ke & Guru Berikutnya (Diposisikan di atas nomor urut & timestamp) -->
+              <div class="grid grid-cols-2 gap-2 bg-slate-50 border border-slate-100 rounded-lg p-2.5 mb-2">
+                <div class="flex flex-col gap-1">
+                  <label for="naik-ke-${item.id}" class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Naik ke</label>
+                  <input 
+                    type="text" 
+                    id="naik-ke-${item.id}" 
+                    value="${naikKe}" 
+                    placeholder="Contoh: 5A"
+                    class="w-full bg-white border border-slate-200 text-xs text-slate-700 rounded px-2 py-1 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label for="guru-next-${item.id}" class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Guru Berikutnya</label>
+                  <input 
+                    type="text" 
+                    id="guru-next-${item.id}" 
+                    value="${guruBerikutnya}" 
+                    placeholder="Nama Guru"
+                    class="w-full bg-white border border-slate-200 text-xs text-slate-700 rounded px-2 py-1 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <!-- Catatan Opsional -->
+              ${catatan ? `
+                <div class="mt-2 text-xs bg-slate-50 border border-slate-100 rounded-lg p-2 text-slate-600">
+                  📝 ${catatan}
+                </div>
+              ` : ''}
+
+              <!-- Bottom Row: Nomor Lingkaran (Kiri) & Timestamp (Kanan) -->
+              <div class="mt-3 pt-2 border-t border-slate-50 flex items-center justify-between text-[10px] text-slate-400">
+                <span class="w-5 h-5 flex items-center justify-center rounded-full bg-slate-100 text-slate-500 font-bold text-[10px]">
+                  ${nomorUrut}
+                </span>
+                <span class="font-medium">${date}</span>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+
+      } catch (err) {
+        container.innerHTML = emptyUI;
+        if (counterText) counterText.innerText = "0 Data Masuk";
+      }
     }
-  });
-}
 
-// Fungsi bantu untuk mengubah teks menjadi Proper Case (Kapital di Setiap Awal Kata)
-function toProperCase(str) {
-  if (!str) return '';
-  return str.toLowerCase().replace(/(?:^|\s|-)\S/g, function(a) {
-    return a.toUpperCase();
-  });
-}
-
-// Fungsi untuk memilih status opsi tes (Lulus / Mengulang)
-function selectOption(value) {
-  const radioLulus = document.getElementById('radio-lulus');
-  const radioMengulang = document.getElementById('radio-mengulang');
-  const optionContainer = document.getElementById('option-container');
-  const selectedContainer = document.getElementById('selected-container');
-  const selectedBtn = document.getElementById('selected-btn');
-  const selectedText = document.getElementById('selected-text');
-
-  if (value === 'LULUS') {
-    if (radioLulus) radioLulus.checked = true;
-    if (selectedBtn) selectedBtn.className = "w-[70%] flex items-center justify-center py-2 px-3 text-[12px] font-bold tracking-[0.05em] uppercase text-white bg-[#10b981] rounded-md shadow-sm text-center select-none";
-  } else {
-    if (radioMengulang) radioMengulang.checked = true;
-    if (selectedBtn) selectedBtn.className = "w-[70%] flex items-center justify-center py-2 px-3 text-[12px] font-bold tracking-[0.05em] uppercase text-white bg-[#ef4444] rounded-md shadow-sm text-center select-none";
-  }
-
-  if (selectedText) selectedText.innerText = value;
-  optionContainer?.classList.add('hidden');
-  selectedContainer?.classList.remove('hidden');
-}
-
-// Fungsi untuk mereset pilihan status tes kembali ke tombol pilihan awal
-function resetOption() {
-  const radioLulus = document.getElementById('radio-lulus');
-  const radioMengulang = document.getElementById('radio-mengulang');
-  if (radioLulus) radioLulus.checked = false;
-  if (radioMengulang) radioMengulang.checked = false;
-
-  document.getElementById('option-container')?.classList.remove('hidden');
-  document.getElementById('selected-container')?.classList.add('hidden');
-}
-
-// Fungsi untuk menampilkan modal peringatan
-function showWarningModal() {
-    const modal = document.getElementById('warningModal');
-    const content = document.getElementById('modalContent');
-    if (modal && content) {
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            content.classList.remove('scale-95', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
-        }, 10);
+    function setupRealtime() {
+      supabaseClient
+        .channel('realtime-hasil-tes')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'hasil_tes' },
+          () => {
+            loadData();
+          }
+        )
+        .subscribe();
     }
-}
 
-// Fungsi untuk menutup modal peringatan
-function closeWarningModal() {
-    const modal = document.getElementById('warningModal');
-    const content = document.getElementById('modalContent');
-    if (modal && content) {
-        content.classList.remove('scale-100', 'opacity-100');
-        content.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
-    }
-}
-
-window.selectOption = selectOption;
-window.resetOption = resetOption;
-window.showWarningModal = showWarningModal;
-window.closeWarningModal = closeWarningModal;
-
-// Event listener untuk input nama siswa
-inputNama?.addEventListener('input', (e) => {
-  const val = e.target.value;
-  renderDropdown(val);
-
-  if (!val) {
-    inputKelas.value = "";
-    inputJilid.value = "";
-  }
-});
-
-// Event listener untuk navigasi keyboard pada input nama siswa
-inputNama?.addEventListener('keydown', (e) => {
-  if (e.key === 'Backspace') {
-    if (inputNama.value.length > 0) {
-      e.preventDefault();
-      inputNama.value = "";
-      inputKelas.value = "";
-      inputJilid.value = "";
-      customDropdown?.classList.add('hidden');
-      selectedIndex = -1;
-      return;
-    }
-  }
-
-  if (customDropdown?.classList.contains('hidden')) return;
-
-  const items = customDropdown?.querySelectorAll('.dropdown-item');
-  if (!items || items.length === 0) return;
-
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    selectedIndex = (selectedIndex + 1) % items.length;
-    updateHighlight(items);
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-    updateHighlight(items);
-  } else if (e.key === 'Enter') {
-    if (selectedIndex > -1 && items[selectedIndex]) {
-      e.preventDefault();
-      items[selectedIndex]._selectItem();
-    }
-  } else if (e.key === 'Escape') {
-    customDropdown?.classList.add('hidden');
-    selectedIndex = -1;
-  }
-});
-
-inputNama?.addEventListener('focus', (e) => {
-  if (e.target.value) renderDropdown(e.target.value);
-});
-
-// Menutup dropdown jika pengguna mengklik di luar area input dan dropdown
-document.addEventListener('click', (e) => {
-  if (!inputNama?.contains(e.target) && !customDropdown?.contains(e.target)) {
-    customDropdown?.classList.add('hidden');
-    selectedIndex = -1;
-  }
-});
-
-// Menutup modal peringatan saat area latar belakang (backdrop) diklik
-document.getElementById('warningModal')?.addEventListener('click', function(event) {
-    if (event.target === this) {
-        closeWarningModal();
-    }
-});
-
-// Event handler saat form disubmit ke Supabase
-form?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  // Validasi: Pastikan tombol Detail Tes (Lulus/Mengulang) sudah dipilih
-  const detailTesValue = form.querySelector('input[name="detailTes"]:checked')?.value;
-  if (!detailTesValue) {
-      showWarningModal();
-      return;
-  }
-
-  const submitBtn = form.querySelector('button[type="submit"]');
-  const originalBtnText = submitBtn ? submitBtn.innerText : 'KIRIM';
-  
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'MENGIRIM...';
-  }
-
-  const namaInput = inputNama.value;
-
-  const payload = {
-    "Submission Date": new Date().toLocaleString('id-ID'),
-    "Nama Siswa": namaInput,
-    "Kelas": inputKelas.value,
-    "Saat Ini": inputJilid.value,
-    "Detail Tes": detailTesValue,
-    "Nama Proper": toProperCase(namaInput),
-    "Catatan": document.getElementById('catatan')?.value || ''
-  };
-
-  try {
-    const { data, error } = await _supabase
-      .from('hasil_tes')
-      .insert([payload]);
-
-    if (!error) {
-      document.getElementById('testForm')?.classList.add('hidden');
-      document.getElementById('suksesContainer')?.classList.remove('hidden');
-    } else {
-      console.error('Error Supabase:', error);
-      alert('❌ Gagal menyimpan data: ' + error.message);
-    }
-  } catch (error) {
-    console.error('Error Submit:', error);
-    alert('❌ Terjadi kesalahan koneksi.');
-  } finally {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.innerText = originalBtnText;
-    }
-  }
-});
-
-// Jalankan fungsi pengunduhan data siswa awal
-fetchSiswa();
-
-// Fungsi untuk menghilangkan splash screen setelah halaman termuat sempurna
-function hideSplash() {
-  const splash = document.getElementById('splash-screen');
-  if (splash) {
-    splash.classList.add('opacity-0', 'pointer-events-none');
-    setTimeout(() => splash.remove(), 500);
-  }
-}
-
-hideSplash();
-</script>
-  </body>
+    window.addEventListener('DOMContentLoaded', initSupabase);
+  </script>
+</body>
 </html>
