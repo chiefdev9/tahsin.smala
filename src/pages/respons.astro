@@ -29,10 +29,10 @@ import '../styles/global.css';
   <link rel="apple-touch-icon" href="/respon-icon-.svg" />
 
   <!-- Mengatur warna status bar di Android -->
-<meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#ffffff" />
 
-<!-- Mengatur status bar di iPhone/iOS agar tetap terlihat -->
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <!-- Mengatur status bar di iPhone/iOS agar tetap terlihat -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen pb-10">
 
@@ -123,6 +123,8 @@ import '../styles/global.css';
           const nama = item['Nama Proper'] || item['Nama Siswa'] || '-';
           const kelas = item['Kelas'] || '-';
           const jilid = item['Saat Ini'] || '-';
+          const naikKe = item['Naik ke'] || '-';
+          const guruBerikutnya = item['Guru Berikutnya'] || '-';
           const catatan = item['Catatan'] || null;
           const date = item['Submission Date'] || '-';
 
@@ -140,8 +142,8 @@ import '../styles/global.css';
                 </span>
               </div>
 
-              <!-- Metadata Row: Kelas & Jilid -->
-              <div class="flex items-center gap-4 text-xs text-slate-500 mb-2">
+              <!-- Metadata Row 1: Kelas & Jilid Saat Ini -->
+              <div class="flex items-center gap-4 text-xs text-slate-500 mb-1.5">
                 <div class="flex items-center gap-1">
                   <span class="text-slate-400 font-medium">Kelas:</span>
                   <span class="font-semibold text-slate-700">${kelas}</span>
@@ -149,6 +151,18 @@ import '../styles/global.css';
                 <div class="flex items-center gap-1">
                   <span class="text-slate-400 font-medium">Jilid:</span>
                   <span class="font-semibold text-slate-700">${jilid}</span>
+                </div>
+              </div>
+
+              <!-- Metadata Row 2: Naik Ke & Guru Berikutnya -->
+              <div class="grid grid-cols-2 gap-2 text-xs text-slate-500 bg-slate-50 p-2.5 rounded-lg mb-2">
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-[11px] text-slate-400 font-medium">Naik ke:</span>
+                  <span class="font-semibold text-emerald-600">${naikKe}</span>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-[11px] text-slate-400 font-medium">Guru Berikutnya:</span>
+                  <span class="font-semibold text-slate-700">${guruBerikutnya}</span>
                 </div>
               </div>
 
